@@ -4,6 +4,7 @@ import { motion, Variants } from 'framer-motion';
 import { SlideData } from '@/lib/slides-data';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import { ArrowRight, Activity, Zap, Layers, RefreshCw, GitBranch } from 'lucide-react';
 
 export default function Slide({ data, isActive }: { data: SlideData; isActive: boolean }) {
   const containerVariants: Variants = {
@@ -32,6 +33,12 @@ export default function Slide({ data, isActive }: { data: SlideData; isActive: b
 
   if (!isActive) return null;
 
+  const getProcessIcon = (index: number) => {
+    const icons = [Activity, Zap, RefreshCw, Layers, GitBranch];
+    const Icon = icons[index % icons.length];
+    return <Icon className="text-accent-gold" size={24} />;
+  };
+
   return (
     <motion.div
       variants={containerVariants}
@@ -52,10 +59,8 @@ export default function Slide({ data, isActive }: { data: SlideData; isActive: b
           className="absolute top-[-10%] left-[-5%] w-[70%] h-[70%] rounded-full opacity-10 blur-[100px]"
           style={{ backgroundColor: data.accentColor || '#d4a574' }}
         />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(255,255,255,0.02)_0%,transparent_50%)]" />
       </div>
 
-      {/* Main Content Scrollable Area on Mobile */}
       <div className="w-full max-w-7xl h-full flex flex-col justify-center overflow-y-auto md:overflow-visible no-scrollbar pt-12 pb-24 md:p-0">
         
         {data.type === 'title' && (
@@ -84,11 +89,55 @@ export default function Slide({ data, isActive }: { data: SlideData; isActive: b
           </div>
         )}
 
+        {data.type === 'process' && (
+          <div className="space-y-12 md:space-y-20">
+            <motion.div variants={itemVariants} className="text-center space-y-4">
+              <h2 className="text-5xl md:text-8xl font-bold tracking-tight text-white">
+                {data.title}
+              </h2>
+              <p className="text-xl md:text-3xl text-accent-gold/60 font-serif italic">{data.subtitle}</p>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 relative">
+              {/* Connector line for desktop */}
+              <div className="hidden md:block absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-y-8" />
+              
+              {data.content?.map((item, i) => (
+                <motion.div 
+                  key={i} 
+                  variants={itemVariants}
+                  className="relative group"
+                >
+                  <div className="glass-card p-6 md:p-8 rounded-2xl h-full flex flex-col items-center text-center gap-6 border-white/5 hover:border-accent-gold/30 transition-colors">
+                    <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-accent-gold/10 group-hover:border-accent-gold/20 transition-all">
+                      {getProcessIcon(i)}
+                    </div>
+                    <div className="space-y-2">
+                      <div className="text-[10px] uppercase tracking-widest text-accent-gold font-bold opacity-50">Step 0{i + 1}</div>
+                      <h3 className="text-lg font-bold text-white group-hover:text-accent-gold transition-colors">
+                        {item.split(':')[0]}
+                      </h3>
+                      <p className="text-sm text-text-secondary leading-relaxed">
+                        {item.split(':')[1]}
+                      </p>
+                    </div>
+                  </div>
+                  {i < data.content!.length - 1 && (
+                    <div className="hidden md:flex absolute -right-2 top-1/2 -translate-y-12 z-20 text-white/10">
+                      <ArrowRight size={24} />
+                    </div>
+                  )}
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {data.type === 'content' && (
           <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
             <div className="space-y-6 md:space-y-10">
               <motion.div variants={itemVariants} className="space-y-3">
-                <h2 className="text-4xl md:text-7xl font-bold leading-tight" style={{ color: data.accentColor }}>
+                <h2 className="text-4xl md:text-7xl font-bold leading-tight text-white">
                   {data.title}
                 </h2>
                 <p className="text-lg md:text-2xl text-text-secondary font-serif italic">{data.subtitle}</p>
@@ -160,7 +209,7 @@ export default function Slide({ data, isActive }: { data: SlideData; isActive: b
         {data.type === 'image' && (
           <div className="space-y-8 md:space-y-12">
              <motion.div variants={itemVariants} className="text-center space-y-2">
-                <h2 className="text-4xl md:text-7xl font-bold" style={{ color: data.accentColor }}>{data.title}</h2>
+                <h2 className="text-4xl md:text-7xl font-bold text-white">{data.title}</h2>
                 <p className="text-lg md:text-2xl font-serif italic text-text-secondary">{data.subtitle}</p>
              </motion.div>
              

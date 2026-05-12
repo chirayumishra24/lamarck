@@ -1,13 +1,13 @@
 export interface SlideData {
   id: number;
-  type: 'title' | 'content' | 'grid' | 'image' | 'quote';
+  type: 'title' | 'content' | 'grid' | 'image' | 'quote' | 'process';
   title: string;
   subtitle?: string;
+  tagline?: string;
   content?: string[];
   image?: string;
-  gridItems?: { title: string; text: string }[];
   accentColor?: string;
-  tagline?: string;
+  gridItems?: { title: string; text: string }[];
 }
 
 export const slides: SlideData[] = [
@@ -34,9 +34,9 @@ export const slides: SlideData[] = [
   },
   {
     id: 3,
-    type: 'content',
+    type: 'process',
     title: 'The Core Idea',
-    subtitle: 'How Evolution Works According to Lamarck',
+    subtitle: 'Lamarck\'s Sequential Logic',
     content: [
       'Environmental Change: Nature creates new challenges and needs.',
       'New Needs: Organisms adapt their behavior to meet these needs.',
@@ -44,7 +44,6 @@ export const slides: SlideData[] = [
       'Inheritance: These acquired changes are passed to the next generation.',
       'Speciation: Over time, these changes accumulate into new species.',
     ],
-    image: '/assets/evolution_concept.png',
     accentColor: '#d4a574',
   },
   {
