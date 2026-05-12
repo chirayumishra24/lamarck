@@ -90,15 +90,15 @@ export default function Slide({ data, isActive }: { data: SlideData; isActive: b
         )}
 
         {data.type === 'process' && (
-          <div className="space-y-12 md:space-y-20">
-            <motion.div variants={itemVariants} className="text-center space-y-4">
-              <h2 className="text-5xl md:text-8xl font-bold tracking-tight text-white">
+          <div className="space-y-6 md:space-y-20 h-full flex flex-col justify-center">
+            <motion.div variants={itemVariants} className="text-center space-y-2 md:space-y-4 pt-4 md:pt-0">
+              <h2 className="text-3xl md:text-8xl font-bold tracking-tight text-white">
                 {data.title}
               </h2>
-              <p className="text-xl md:text-3xl text-accent-gold/60 font-serif italic">{data.subtitle}</p>
+              <p className="text-lg md:text-3xl text-accent-gold/60 font-serif italic">{data.subtitle}</p>
             </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 relative">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-3 md:gap-4 relative pb-12 md:pb-0">
               {/* Connector line for desktop */}
               <div className="hidden md:block absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-y-8" />
               
@@ -108,16 +108,18 @@ export default function Slide({ data, isActive }: { data: SlideData; isActive: b
                   variants={itemVariants}
                   className="relative group"
                 >
-                  <div className="glass-card p-6 md:p-8 rounded-2xl h-full flex flex-col items-center text-center gap-6 border-white/5 hover:border-accent-gold/30 transition-colors">
-                    <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-accent-gold/10 group-hover:border-accent-gold/20 transition-all">
-                      {getProcessIcon(i)}
+                  <div className="glass-card p-4 md:p-8 rounded-xl md:rounded-2xl h-full flex flex-row md:flex-col items-center text-left md:text-center gap-4 md:gap-6 border-white/5 hover:border-accent-gold/30 transition-colors">
+                    <div className="w-10 h-10 md:w-16 md:h-16 flex-shrink-0 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-accent-gold/10 group-hover:border-accent-gold/20 transition-all">
+                      <div className="scale-75 md:scale-100">
+                        {getProcessIcon(i)}
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <div className="text-[10px] uppercase tracking-widest text-accent-gold font-bold opacity-50">Step 0{i + 1}</div>
-                      <h3 className="text-lg font-bold text-white group-hover:text-accent-gold transition-colors">
+                    <div className="space-y-1 md:space-y-2">
+                      <div className="text-[8px] md:text-[10px] uppercase tracking-widest text-accent-gold font-bold opacity-50">Step 0{i + 1}</div>
+                      <h3 className="text-sm md:text-lg font-bold text-white group-hover:text-accent-gold transition-colors">
                         {item.split(':')[0]}
                       </h3>
-                      <p className="text-sm text-text-secondary leading-relaxed">
+                      <p className="text-[11px] md:text-sm text-text-secondary leading-relaxed line-clamp-2 md:line-clamp-none">
                         {item.split(':')[1]}
                       </p>
                     </div>
