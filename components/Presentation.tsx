@@ -10,6 +10,10 @@ import { cn } from '@/lib/utils';
 export default function Presentation() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [direction, setDirection] = useState(0);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+  const minSwipeDistance = 50;
 
   const nextSlide = useCallback(() => {
     if (currentSlide + 1 < slides.length) {
@@ -24,6 +28,38 @@ export default function Presentation() {
       setCurrentSlide((prev) => prev - 1);
     }
   }, [currentSlide]);
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    
+    if (isLeftSwipe) {
+      nextSlide();
+    } else if (isRightSwipe) {
+      prevSlide();
+    }
+  };
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -44,18 +80,13 @@ export default function Presentation() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [nextSlide, prevSlide, currentSlide]);
 
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      }
-    }
-  };
-
   return (
-    <main className="relative h-screen w-screen bg-[#050505] overflow-hidden select-none font-sans">
+    <main 
+      className="relative h-screen w-screen bg-[#050505] overflow-hidden select-none font-sans"
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
       {/* Texture Overlay */}
       <div className="noise-overlay" />
       
@@ -66,7 +97,7 @@ export default function Presentation() {
         <Slide key={currentSlide} data={slides[currentSlide]} isActive={true} />
       </AnimatePresence>
 
-      {/* Top Header - Simplified on Mobile */}
+      {/* Top Header */}
       <div className="absolute top-0 left-0 w-full z-50 p-4 md:p-6 flex items-center justify-between pointer-events-none">
         <div className="flex items-center gap-3 md:gap-4 pointer-events-auto">
           <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-accent-gold/10 border border-accent-gold/20 flex items-center justify-center">
@@ -95,7 +126,7 @@ export default function Presentation() {
         </div>
       </div>
 
-      {/* Floating Controls - Repositioned for Mobile */}
+      {/* Floating Controls */}
       <div className="absolute bottom-6 left-6 md:bottom-10 md:left-10 z-50 flex items-center gap-4 md:gap-6 pointer-events-none">
         <div className="flex gap-2 pointer-events-auto">
           <button 
@@ -136,7 +167,7 @@ export default function Presentation() {
         </button>
       </div>
 
-      {/* Navigation Indicators - Hidden on small mobile */}
+      {/* Navigation Indicators */}
       <div className="hidden sm:flex absolute right-6 md:right-10 top-1/2 -translate-y-1/2 flex-col gap-4 md:gap-5 z-50">
         {slides.map((slide, i) => (
           <button
@@ -159,8 +190,8 @@ export default function Presentation() {
           </button>
         ))}
       </div>
-
-      {/* Footer Info removed as per user request */}
+      
+      {/* Footer Info removed */}
     </main>
   );
 }
