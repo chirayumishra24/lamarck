@@ -5,6 +5,7 @@ import { slides } from '@/lib/slides-data';
 import Slide from './Slide';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronRight, ChevronLeft, Keyboard, LayoutGrid } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export default function Presentation() {
   const [currentSlide, setCurrentSlide] = useState(0);
