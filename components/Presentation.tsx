@@ -44,6 +44,16 @@ export default function Presentation() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [nextSlide, prevSlide, currentSlide]);
 
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  };
+
   return (
     <main className="relative h-screen w-screen bg-[#050505] overflow-hidden select-none font-sans">
       {/* Texture Overlay */}
@@ -56,18 +66,18 @@ export default function Presentation() {
         <Slide key={currentSlide} data={slides[currentSlide]} isActive={true} />
       </AnimatePresence>
 
-      {/* Top Navigation / Progress */}
-      <div className="absolute top-0 left-0 w-full z-50 p-6 flex items-center justify-between pointer-events-none">
-        <div className="flex items-center gap-4 pointer-events-auto">
-          <div className="w-10 h-10 rounded-xl bg-accent-gold/10 border border-accent-gold/20 flex items-center justify-center">
-             <LayoutGrid size={18} className="text-accent-gold" />
+      {/* Top Header - Simplified on Mobile */}
+      <div className="absolute top-0 left-0 w-full z-50 p-4 md:p-6 flex items-center justify-between pointer-events-none">
+        <div className="flex items-center gap-3 md:gap-4 pointer-events-auto">
+          <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-accent-gold/10 border border-accent-gold/20 flex items-center justify-center">
+             <LayoutGrid size={16} className="text-accent-gold md:w-[18px]" />
           </div>
-          <div className="text-[10px] uppercase tracking-[0.4em] text-accent-gold font-bold">
-            Evolutionary Biology Series
+          <div className="text-[8px] md:text-[10px] uppercase tracking-[0.4em] text-accent-gold font-bold">
+            Evolutionary Series
           </div>
         </div>
 
-        <div className="flex-1 max-w-md mx-8 pointer-events-auto">
+        <div className="hidden md:block flex-1 max-w-md mx-8 pointer-events-auto">
           <div className="h-[2px] w-full bg-white/5 rounded-full overflow-hidden">
             <motion.div 
               className="h-full bg-gradient-to-r from-accent-gold to-white shadow-[0_0_10px_rgba(212,165,116,0.5)]"
@@ -78,40 +88,56 @@ export default function Presentation() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 text-white/40 text-[10px] font-bold tracking-widest pointer-events-auto uppercase">
+        <div className="flex items-center gap-2 text-white/40 text-[9px] md:text-[10px] font-bold tracking-widest pointer-events-auto uppercase">
           <span>{String(currentSlide + 1).padStart(2, '0')}</span>
           <span className="opacity-20">/</span>
           <span>{String(slides.length).padStart(2, '0')}</span>
         </div>
       </div>
 
-      {/* Floating Controls */}
-      <div className="absolute bottom-10 left-10 z-50 flex items-center gap-6 pointer-events-none">
+      {/* Floating Controls - Repositioned for Mobile */}
+      <div className="absolute bottom-6 left-6 md:bottom-10 md:left-10 z-50 flex items-center gap-4 md:gap-6 pointer-events-none">
         <div className="flex gap-2 pointer-events-auto">
           <button 
             onClick={prevSlide}
             disabled={currentSlide === 0}
-            className="w-12 h-12 rounded-2xl glass-card flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 hover:border-white/20 disabled:opacity-0 transition-all group"
+            className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl glass-card flex items-center justify-center text-white/50 hover:text-white disabled:opacity-0 transition-all"
           >
-            <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+            <ChevronLeft size={18} />
           </button>
           <button 
             onClick={nextSlide}
             disabled={currentSlide === slides.length - 1}
-            className="w-12 h-12 rounded-2xl glass-card flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 hover:border-white/20 disabled:opacity-0 transition-all group"
+            className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl glass-card flex items-center justify-center text-white/50 hover:text-white disabled:opacity-0 transition-all"
           >
-            <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            <ChevronRight size={18} />
           </button>
         </div>
         
-        <div className="hidden md:flex flex-col pointer-events-none">
-          <div className="text-[10px] uppercase tracking-widest text-white/30 font-bold mb-1">Current Subject</div>
-          <div className="text-sm font-serif italic text-accent-gold">{slides[currentSlide].title}</div>
+        <div className="hidden sm:flex flex-col pointer-events-none">
+          <div className="text-[8px] md:text-[10px] uppercase tracking-widest text-white/30 font-bold mb-0.5">Current</div>
+          <div className="text-xs md:text-sm font-serif italic text-accent-gold whitespace-nowrap">{slides[currentSlide].title}</div>
         </div>
       </div>
 
-      {/* Vertical Dot Nav */}
-      <div className="absolute right-10 top-1/2 -translate-y-1/2 flex flex-col gap-5 z-50">
+      {/* Fullscreen Button */}
+      <div className="absolute bottom-6 right-6 md:bottom-10 md:right-10 z-50">
+        <button 
+          onClick={toggleFullscreen}
+          className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl glass-card flex items-center justify-center text-white/50 hover:text-white transition-all"
+          title="Toggle Fullscreen"
+        >
+          <motion.div
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <LayoutGrid size={18} className="rotate-45" />
+          </motion.div>
+        </button>
+      </div>
+
+      {/* Navigation Indicators - Hidden on small mobile */}
+      <div className="hidden sm:flex absolute right-6 md:right-10 top-1/2 -translate-y-1/2 flex-col gap-4 md:gap-5 z-50">
         {slides.map((slide, i) => (
           <button
             key={i}
@@ -120,51 +146,21 @@ export default function Presentation() {
               setCurrentSlide(i);
             }}
             className="group relative flex items-center justify-end"
-            aria-label={`Go to slide ${i + 1}`}
           >
-            <span className="absolute right-8 text-[10px] uppercase tracking-[0.2em] text-accent-gold font-bold opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0 whitespace-nowrap pointer-events-none">
+            <span className="absolute right-8 text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-accent-gold font-bold opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0 whitespace-nowrap pointer-events-none hidden lg:block">
               {slide.title}
             </span>
             <div className={cn(
-              "w-2 transition-all duration-500 rounded-full",
+              "w-1.5 md:w-2 transition-all duration-500 rounded-full",
               i === currentSlide 
-                ? "h-10 bg-accent-gold shadow-[0_0_15px_rgba(212,165,116,0.6)]" 
-                : "h-2 bg-white/10 hover:bg-white/30"
+                ? "h-8 md:h-10 bg-accent-gold shadow-[0_0_15px_rgba(212,165,116,0.6)]" 
+                : "h-1.5 md:h-2 bg-white/10 hover:bg-white/30"
             )} />
           </button>
         ))}
       </div>
 
-      {/* Footer Info */}
-      <div className="absolute bottom-10 right-10 z-50 pointer-events-none hidden lg:block">
-        <div className="text-right space-y-1">
-          <div className="text-[10px] uppercase tracking-[0.3em] text-white/20 font-bold">Interactive Presentation</div>
-          <div className="text-[10px] uppercase tracking-[0.3em] text-accent-gold/40 font-bold flex items-center justify-end gap-2">
-            <Keyboard size={10} /> Use Arrow Keys to Navigate
-          </div>
-        </div>
-      </div>
-
-      {/* Enter Hint Overlay */}
-      <AnimatePresence>
-        {currentSlide === 0 && (
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="absolute bottom-24 left-1/2 -translate-x-1/2 z-40 pointer-events-none"
-          >
-            <div className="px-6 py-3 rounded-full glass-card border-accent-gold/30 flex items-center gap-4">
-              <div className="w-6 h-6 rounded-md bg-accent-gold/20 border border-accent-gold/40 flex items-center justify-center text-[10px] font-bold text-accent-gold">
-                ↵
-              </div>
-              <span className="text-[10px] uppercase tracking-[0.4em] text-accent-gold font-bold">
-                Press Enter to Begin Journey
-              </span>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Footer Info removed as per user request */}
     </main>
   );
 }
