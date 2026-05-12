@@ -44,6 +44,7 @@ export const slides: SlideData[] = [
       'Inheritance: These acquired changes are passed to the next generation.',
       'Speciation: Over time, these changes accumulate into new species.',
     ],
+    image: '/assets/evolution_concept.png',
     accentColor: '#d4a574',
   },
   {
